@@ -128,5 +128,7 @@ dmypy.json
 # node_modules
 node_modules
 
-# Django media
+# Django media & collected static
 media
+static
+

@@ -25,7 +25,7 @@ SECRET_KEY = 'g91mosg-yb=*!2s@xo$82#_fi8wb8q!qaaw@wwqvr3)!8a-rs*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','192.168.0.4']
+ALLOWED_HOSTS = ['localhost','192.168.0.4','.pythonanywhere.com']
 
 
 # Application definition
@@ -58,7 +58,7 @@ ROOT_URLCONF = 'happyinsta.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join('happyinsta', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'happyinsta', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
