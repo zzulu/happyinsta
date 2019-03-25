@@ -25,7 +25,7 @@ SECRET_KEY = 'g91mosg-yb=*!2s@xo$82#_fi8wb8q!qaaw@wwqvr3)!8a-rs*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.4']
+ALLOWED_HOSTS = ['localhost','192.168.0.4']
 
 
 # Application definition
@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
+    'apps.posts.apps.PostsConfig',
+    'apps.accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'happyinsta.urls'
@@ -54,7 +58,7 @@ ROOT_URLCONF = 'happyinsta.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join('happyinsta', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,9 +107,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -118,3 +122,26 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'happyinsta', 'assets'),
+    os.path.join(BASE_DIR, 'node_modules'),
+]
+
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Auth path
+LOGIN_URL = '/login/'
+# LOGIN_REDIRECT_URL = '/posts/'
+# LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+# Auth Model
+AUTH_USER_MODEL='accounts.User'
+
+
+# Debug Toolbar
+INTERNAL_IPS = '127.0.0.1'

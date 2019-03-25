@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Happy Insta</title>
+  <!-- css -->
+  <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <!-- js -->
+  <script type="text/javascript" src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+</head>
+<body>
+  {% if user.is_authenticated %}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'posts:list' %}">Happy Insta</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts:post_list' user.username %}">{{ user.username }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  {% endif %}
+
+  <div class="container">
+    {% block container %}
+    {% endblock %}
+  </div>
+
+  <script type="text/javascript" src="{% static 'popper.js/dist/popper.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+</body>
+</html>

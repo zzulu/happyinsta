@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block container %}
+  
+  <header class="mt-5 py-4">
+    <img src="{{ page_user.profile.image_url }}" alt="" class="profile__image">
+    <span class="profile__username">{{ page_user.username }}</span>
+    {% if page_user != user %}
+      <span id="follow" class="btn {% if page_user in user.followings.all %}btn-outline-primary{% else %}btn-primary{% endif %}" data-username="{{ page_user.username }}">{% if page_user in user.followings.all %}Unfollow{% else %}Follow{% endif %}</span>
+    {% endif %}
+  </header>
+  
+  <section class="row py-4">
+    {% for post in posts %}
+      <div class="col-4 py-3">
+        <img src="{{ post.image.url }}" alt="" class="img-fluid">
+      </div>
+    {% endfor %}
+  </section>
+
+  <script>
+    $('#follow').on('click', function(e){
+      username = $(this).attr('data-username')
+
+      $.ajax({
+        type: 'post',
+        url: `/${username}/follow/`,
+        data: {
+          'csrfmiddlewaretoken': getCookie('csrftoken'),
+        },
+        success: (data) => {
+          if (data.followed) {
+            $(this).removeClass('btn-primary').addClass('btn-outline-primary')
+            $(this).html('Unfollow')
+          } else {
+            $(this).removeClass('btn-outline-primary').addClass('btn-primary')
+            $(this).html('Follow')
+          }
+        },
+        error: (data) => {
+          alert('Something went wrong!');
+        }
+      });
+    })
+  </script>
+
+{% endblock %}

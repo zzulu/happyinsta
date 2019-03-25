@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block container %}
+<div class="row">
+  <section class="offset-3 col-6">
+    <ul class="p-0">
+      {% for post in posts %}
+      <li class="post">
+        <header class="p-3">
+          <img src="{{ post.user.profile.image_url }}" alt="User Profile">
+          <a href="{% url 'accounts:post_list' post.user.username %}" class="username">{{ post.user.username }}</a>
+        </header>
+
+        <img src="{{ post.image.url }}" alt="">
+
+        <div class="px-3 my-3 post__buttons">
+          <i class="{% if user in post.like_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg like" data-post-id="{{ post.pk }}"></i>
+        </div>
+        <p class="px-3 mt-3 mb-1">{{ post.content }}</p>
+        <p class="px-3 small text-secondary">{{ post.created_at }}</p>
+
+        <div class="post__comment">
+          <ul id="comment-list-{{ post.pk }}" class="comment__list">
+            {% for comment in post.comment_set.all %}
+            <li id="comment-{{ comment.pk }}" data-comment-id="{{ comment.pk }}" data-post-id="{{ post.pk }}">
+              <a href="{% url 'accounts:post_list' comment.user.username %}" class="username">{{ comment.user.username }}</a>{{ comment.content }}{% if user == comment.user %}&ensp;<span class="comment-delete">&times;</span>{% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+          <hr class="mx-3 my-0">
+          <form action="{% url 'posts:comment_create' post.pk %}" method="post" class="comment__form">
+            {% csrf_token %}
+            {{ comment_form }}
+          </form>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+
+<script>
+  deleteComment = function(e) {
+    commentId = $(this).parent().attr('data-comment-id')
+    postId = $(this).parent().attr('data-post-id')
+
+    $.ajax({
+      type: 'post',
+      url: `/${postId}/comments/${commentId}/delete/`,
+      data: {
+        'csrfmiddlewaretoken': getCookie('csrftoken'),
+      },
+      success: function(data) {
+        $(`#comment-${data.pk}`).remove()
+      },
+      error: function(data) {
+        alert('Something went wrong!')
+      }
+    });
+  }
+
+  $('.comment__form').on('submit', function(e){
+    e.preventDefault();
+    $.ajax({
+      type: $(this).attr('method'),
+      url: $(this).attr('action'),
+      data: $(this).serialize(),
+      success: function(data) {
+        var item = `
+          <li id="comment-${data.pk}" data-comment-id="${data.pk}" data-post-id="${data.post_id}">
+            <a href="/${data.username}/" class="username">${ data.username }</a>${ data.content }&ensp;<span class="comment-delete">&times;</span>
+          </li>
+        `
+        $(`#comment-list-${data.post_id}`).append(item);
+        $('.comment-delete').on('click', deleteComment)
+      },
+      error: function(data) {
+        alert('Something went wrong!');
+      }
+    });
+    this.reset();
+  })
+
+  $('.comment-delete').on('click', deleteComment)
+
+  $('.like').on('click', function(e) {
+    postId = $(this).attr('data-post-id')
+
+    $.ajax({
+      type: 'post',
+      url: `/${postId}/like/`,
+      data: {
+        'csrfmiddlewaretoken': getCookie('csrftoken'),
+      },
+      success: (data) => {
+        if (data.liked) {
+          $(this).removeClass('far').addClass('fas')
+        } else {
+          $(this).removeClass('fas').addClass('far')
+        }
+      },
+      error: (data) => {
+        alert('Something went wrong!');
+      }
+    });
+  })
+</script>
+
+{% endblock %}
