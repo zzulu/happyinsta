@@ -6,6 +6,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from .models import Profile
 from .forms import UserCreationForm
@@ -50,8 +51,9 @@ def signup(request):
     return render(request, 'accounts/signup.html', { # registration
         'form': form,
     })
-    
 
+
+@login_required
 def post_list(request, username):
     user = get_object_or_404(get_user_model(), username=username)
     posts = user.post_set.all()
